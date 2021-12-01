@@ -24,11 +24,12 @@ public class Controller {
     private boolean futaStopper;
     private Timer stopperTimer;
     private LocalDateTime startTime;
+    private Duration leallitasIdeje;
 
     @FXML
     public void initialize(){
         futaStopper = false;
-
+        leallitasIdeje = Duration.ZERO;
     }
 
     @FXML
@@ -50,11 +51,12 @@ public class Controller {
     }
 
     private void stopperStop() {
+        Duration elteltIdo = Duration.between(startTime, LocalDateTime.now());
         btnStartStop.setText("Start");
         btnResetReszido.setText("Reset");
         futaStopper = false;
+        leallitasIdeje = leallitasIdeje.plus(elteltIdo);
         stopperTimer.cancel();
-
     }
 
     private void stopperStart() {
@@ -68,6 +70,7 @@ public class Controller {
             public void run() {
                 LocalDateTime aktualisIdopont = LocalDateTime.now();
                 Duration elteltIdo = Duration.between(startTime, aktualisIdopont);
+                elteltIdo = elteltIdo.plus(leallitasIdeje);
                 int perc = elteltIdo.toMinutesPart();
                 int masodperc = elteltIdo.toSecondsPart();
                 int ezredMasodperc = elteltIdo.toMillisPart();
@@ -80,6 +83,7 @@ public class Controller {
     private void reset() {
         stopper.setText("00:00.000");
         reszidoLista.getItems().clear();
+        leallitasIdeje = Duration.ZERO;
     }
 
     private void reszido() {
